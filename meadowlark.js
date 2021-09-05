@@ -1,30 +1,21 @@
+const fortune = require('./lib/fortune');
 const express = require('express');
 const app = express();
 // set up handlebars view engine
-const handlebars = require( 'express-handlebars' );
-app.engine( 'handlebars', handlebars({extname: "handlebars", defaultLayout: false, layoutsDir: "views/layouts"}) );
-app.set( 'view engine', 'handlebars' );
+const handlebars = require('express-handlebars');
+app.engine('handlebars', handlebars({extname: "handlebars", defaultLayout: false, layoutsDir: "views/layouts"}));
+app.set('view engine', 'handlebars');
 
-const fortunes = [
-    "Conquer your fears or they will conquer you.",
-    "Rivers need springs.",
-    "Do not fear what you don't know.",
-    "You will have a pleasant surprise.",
-    "Whenever possible, keep it simple.",
-];
-
-app.use( express.static( __dirname + '/public' ));
-app.set( 'port', process.env.PORT || 3000 );
+app.use(express.static(__dirname + '/public'));
+app.set('port', process.env.PORT || 3000);
 
 app.get('/', (req, res) => {
-    res.render( 'home' );
+    res.render('home');
 });
 
-app.get( '/about', ( req, res ) => {
-    let randomFortune =
-        fortunes[ Math.floor( Math.random() * fortunes.length ) ];
-    res.render( 'about', { fortune: randomFortune } );
-} );
+app.get('/about', (req, res) => {
+    res.render('about', {fortune: fortune.getFortune()});
+});
 
 // custom 404 page
 app.use((req, res, next) => {
@@ -36,7 +27,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500);
-    res.render( '500' );
+    res.render('500');
 });
 
 app.listen(app.get('port'), () => {
